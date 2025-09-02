@@ -13,31 +13,31 @@ clc;clear;close all;
 %   --> check the photos in the folder "titled"
 %
 % (2) Format of input parameters：
-% In the file <InputPara.txt>,
-% The first line is the drill hole name.
-% The second line is the total number of rock core boxes.
-% After the line breaks, each line represents the hole-depth at the end of
-% each box.
+% 	In the file <InputPara.txt>,
+% 	The first line is the drill hole name.
+% 	The second line is the total number of rock core boxes.
+% 	After the line breaks, each line represents the hole-depth at the end of
+% 	each box.
 % 
 % For example：Assuming there are 4 boxes of drill hole ZK07, with 
-% hole-depths of 5m, 10m, 15m, and 19.5m at the end of boxes. 
-% Then in the <InputPara.txt> file, write:
-% ZK07
-% 4
-% 5
-% 10
-% 15
-% 19.5
+% 	hole-depths of 5m, 10m, 15m, and 19.5m at the end of boxes. 
+% 	Then in the <InputPara.txt> file, write:
+% 	ZK07
+% 	4
+% 	5
+% 	10
+% 	15
+% 	19.5
 %
 % (3) Order of rock core photos：
-% Rock core photos must be arranged in ascending order in the folder.
+% 	Rock core photos must be arranged in ascending order in the folder.
 % 
 % (4) Operations when selecting 4 corner points of the boxes：
-%  a. When clickinging the four corners of the boxes, must follow the 
-%  order: top left, top right, bottom left, and bottom right.
+%  a. When clicking the four corners of the boxes, must follow the 
+%  	 order: top left, top right, bottom left, and bottom right.
 %  b. Left mouse button click for selection;  
-%  Right-click to cancel the previous one point;  
-%  Press the space bar to confirm the 4 points and go on to the next box.
+%  	 Right-click for cancelling the previous one point;  
+%  	 Press the spacebar to confirm the 4 points and go on to the next photo.
 % ----------------------------------------------------------------------------
 
 
@@ -170,7 +170,7 @@ for i = 1:k
 
 end
 
-% ------- Main circle -------
+% ----------- MAIN LOOP -----------
 for i = 1:k
     disp(i);
     clear warped_img
@@ -336,6 +336,8 @@ for i = 1:k
     disp(i);
 
 end
+
+% ----------- MAIN LOOP END -----------
 
 
 close all;
