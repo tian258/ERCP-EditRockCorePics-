@@ -328,7 +328,7 @@ for i = 1:k
 
     answer = cat(1,title3,warped_img); % 最终结果
     imshow(answer);
-    name = strcat(foldername,'\',name);
+    name = strcat(foldername,'\',titlename,'.jpg');
     imwrite(answer, name, Quality=95); % 保存图片
 
     disp(i);
@@ -340,6 +340,7 @@ end
 % -------------------------------------
 
 close all;
+delete('zhongzhuan.jpg');
 disp('ALL DONE');
 
 

@@ -170,11 +170,7 @@ for i = 1:k
 
 end
 
-<<<<<<< HEAD
 % ----------- MAIN LOOP -----------
-=======
-% ------- Main loop -------
->>>>>>> a6e7d39e6a40ef23b4d1a363e6eec45542c1455b
 for i = 1:k
     disp(i);
     clear warped_img
@@ -334,7 +330,7 @@ for i = 1:k
 
     answer = cat(1,title3,warped_img); % 最终结果
     imshow(answer);
-    name = strcat(foldername,'\',name);
+    name = strcat(foldername,'\',titlename,'.jpg');
     imwrite(answer, name, Quality=95); % 保存图片
 
     disp(i);
