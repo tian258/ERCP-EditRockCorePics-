@@ -170,7 +170,7 @@ for i = 1:k
 
 end
 
-% ------- Main circle -------
+% ------- Main loop -------
 for i = 1:k
     disp(i);
     clear warped_img
