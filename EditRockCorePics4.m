@@ -39,7 +39,7 @@ clc;clear;close all;
 %    空格为确认四个点，进入下一张照片。
 % ----------------------------------------------------------------------------
 %   岩芯照片编辑( edit rock core pics, ERCP)脚本采用"活字印刷法"绘制岩芯照片标题，
-% 使用双三次插值( Bicubic interpolation)透视变形( perspective transform)校正岩
+% 使用双三次插值( Bicubic interpolation)透视变换( perspective transform)校正岩
 % 芯箱图片。有改进意见可联系：tianxuezhou@163.com
 % ----------------------------------------------------------------------------
 
