@@ -1,7 +1,7 @@
 clc;clear;close all;
 
 % ----------------------------------------------------------------------------
-%   EditRockCorePics 使用说明:                                                                
+%   EditRockCorePics 4.0 使用说明:                                                                
 % ----------------------------------------------------------------------------
 % 
 % 1）流程为: 
@@ -38,12 +38,12 @@ clc;clear;close all;
 %    右键为取消上一个点; 
 %    空格为确认四个点，进入下一张照片。
 % ----------------------------------------------------------------------------
-%   岩芯照片编辑( edit rock core pics, ERCP)脚本采用"活字印刷法"绘制岩芯照片标题，
-% 使用双三次插值( Bicubic interpolation)透视变形( perspective transform)校正岩
-% 芯箱图片。有改进意见可联系：tianxuezhou@163.com
+%    岩芯照片编辑( edit rock core pics, ERCP)脚本采用"活字印刷法"绘制岩芯照片标题，
+% 使用双三次插值( Bicubic interpolation)透视变换( perspective transform)校正岩
+% 芯箱框框。有改进建议可联系：tianxuezhou@163.com
 % ----------------------------------------------------------------------------
 
-global i;
+global i kongshen;
 
 % --------- 读取输入参数 ---------
 load('Font.mat');
@@ -55,30 +55,7 @@ kongshen = zeros(1,Bnum);
 
 % ------ 编辑岩芯照片名字及抬头文字 -----
 txt = num2cell(zeros(1,Bnum)); % 重命名的岩芯照片名字
-for i = 1:Bnum
-    kongshen(i) = input{i+2};
-    if(i==1)
-        if(kongshen(i)==round(kongshen(i))) % 后整
-            txt(i) = cellstr(strcat(Bname,' 第',num2str(i),'箱 孔深：','0.0m～',num2str(kongshen(i)),'.0m'));
-        else
-            txt(i) = cellstr(strcat(Bname,' 第',num2str(i),'箱 孔深：','0.0m～',num2str(kongshen(i)),'m'));
-        end
-    else
-        if(kongshen(i)==round(kongshen(i))) % 后整
-            if(kongshen(i-1)==round(kongshen(i-1))) % 前整
-                txt(i) = cellstr(strcat(Bname,' 第',num2str(i),'箱 孔深：',num2str(kongshen(i-1)),'.0m～',num2str(kongshen(i)),'.0m'));
-            else % 前不整
-                txt(i) = cellstr(strcat(Bname,' 第',num2str(i),'箱 孔深：',num2str(kongshen(i-1)),'m～',num2str(kongshen(i)),'.0m'));
-            end
-        else % 后不整
-            if(kongshen(i-1)==round(kongshen(i-1))) % 前整
-                txt(i) = cellstr(strcat(Bname,' 第',num2str(i),'箱 孔深：',num2str(kongshen(i-1)),'.0m～',num2str(kongshen(i)),'m'));
-            else % 前不整
-                txt(i) = cellstr(strcat(Bname,' 第',num2str(i),'箱 孔深：',num2str(kongshen(i-1)),'m～',num2str(kongshen(i)),'m'));
-            end
-        end
-    end
-end
+txt = RenamePics(Bnum, input, Bname);
 
 % 创建文件夹titled，放置加好抬头的岩芯照片
 foldername = strcat(InputAddress,'岩芯照片');
@@ -139,27 +116,7 @@ for i = 1:k
         orientation = 1; % 如果获取信息失败，也设为正常方向
     end
     
-    % 根据 orientation 值旋转图像
-    switch orientation
-        case 1 % 正常
-            corrected_img = img; % 无需旋转
-        case 2 % 水平翻转 (较少见)
-            corrected_img = flip(img, 2); % 沿垂直轴翻转
-        case 3 % 旋转 180 度
-            corrected_img = rot90(img, 2); % 旋转 180 度
-        case 4 % 垂直翻转 (较少见)
-            corrected_img = flip(img, 1); % 沿水平轴翻转
-        case 5 % 先水平翻转再顺时针旋转270度 (较少见)
-            corrected_img = rot90(flip(img, 2), 3);
-        case 6 % 顺时针旋转 90 度 (iPhone竖屏拍摄常见)
-            corrected_img = rot90(img, -1); % 逆时针旋转90度等于顺时针旋转270度
-        case 7 % 先水平翻转再顺时针旋转90度 (较少见)
-            corrected_img = rot90(flip(img, 2), -1);
-        case 8 % 顺时针旋转 270 度
-            corrected_img = rot90(img, 1); % 逆时针旋转90度
-        otherwise
-            corrected_img = img; % 默认情况
-    end
+    corrected_img = OrienRota(img,orientation);
     img = corrected_img;
 
     [m,n,r]=size(img); % m为照片y方向像素数（宽）；n为x方向像素数（长）
@@ -204,7 +161,7 @@ end
 % ---------------------------------
 
 for i = 1:k
-    disp(i);
+    % % disp(i);
     clear warped_img
     clear char
 
@@ -225,27 +182,7 @@ for i = 1:k
         orientation = 1; % 如果获取信息失败，也设为正常方向
     end
     
-    % 根据 orientation 值旋转图像
-    switch orientation
-        case 1 % 正常
-            corrected_img = img; % 无需旋转
-        case 2 % 水平翻转 (较少见)
-            corrected_img = flip(img, 2); % 沿垂直轴翻转
-        case 3 % 旋转 180 度
-            corrected_img = rot90(img, 2); % 旋转 180 度
-        case 4 % 垂直翻转 (较少见)
-            corrected_img = flip(img, 1); % 沿水平轴翻转
-        case 5 % 先水平翻转再顺时针旋转270度 (较少见)
-            corrected_img = rot90(flip(img, 2), 3);
-        case 6 % 顺时针旋转 90 度 (iPhone竖屏拍摄常见)
-            corrected_img = rot90(img, -1); % 逆时针旋转90度等于顺时针旋转270度
-        case 7 % 先水平翻转再顺时针旋转90度 (较少见)
-            corrected_img = rot90(flip(img, 2), -1);
-        case 8 % 顺时针旋转 270 度
-            corrected_img = rot90(img, 1); % 逆时针旋转90度
-        otherwise
-            corrected_img = img; % 默认情况
-    end
+    corrected_img = OrienRota(img,orientation);
     img = corrected_img;
 
     if (RotTimes(i)>0)
@@ -409,8 +346,7 @@ for i = 1:k
     name = strcat(foldername,'\',titlename,'.jpg');
     imwrite(answer, name, Quality=95); % 保存图片
 
-    disp(i);
-
+    disp(strcat('第',num2str(i),'箱完成.'));
 end
 
 % --------------------------------------
@@ -419,7 +355,11 @@ end
 
 close all;
 disp('ALL DONE');
-msgbox('已完成岩芯照片编辑.');
+box = msgbox('已完成所有岩芯照片编辑.');
+txtdone = findall(box, 'Type', 'text');
+set(txtdone, 'FontSize', 11); 
+jButton = findobj(box, 'Style', 'pushbutton');
+set(jButton, 'FontSize', 10); % 设置字体大小为 10
 
 
 
@@ -534,4 +474,54 @@ function keyPressCallback(~, event)
     end
 end
 
+% 根据 orientation 值旋转图像
+function corrected_img = OrienRota(img,orientation)
+    switch orientation
+        case 1 % 正常
+            corrected_img = img; % 无需旋转
+        case 2 % 水平翻转 (较少见)
+            corrected_img = flip(img, 2); % 沿垂直轴翻转
+        case 3 % 旋转 180 度
+            corrected_img = rot90(img, 2); % 旋转 180 度
+        case 4 % 垂直翻转 (较少见)
+            corrected_img = flip(img, 1); % 沿水平轴翻转
+        case 5 % 先水平翻转再顺时针旋转270度 (较少见)
+            corrected_img = rot90(flip(img, 2), 3);
+        case 6 % 顺时针旋转 90 度 (iPhone竖屏拍摄常见)
+            corrected_img = rot90(img, -1); % 逆时针旋转90度等于顺时针旋转270度
+        case 7 % 先水平翻转再顺时针旋转90度 (较少见)
+            corrected_img = rot90(flip(img, 2), -1);
+        case 8 % 顺时针旋转 270 度
+            corrected_img = rot90(img, 1); % 逆时针旋转90度
+        otherwise
+            corrected_img = img; % 默认情况
+    end
+end
 
+function txt = RenamePics(Bnum, input, Bname)
+global kongshen
+    for i = 1:Bnum
+        kongshen(i) = input{i+2};
+        if(i==1)
+            if(kongshen(i)==round(kongshen(i))) % 后整
+                txt(i) = cellstr(strcat(Bname,' 第',num2str(i),'箱 孔深：','0.0m～',num2str(kongshen(i)),'.0m'));
+            else
+                txt(i) = cellstr(strcat(Bname,' 第',num2str(i),'箱 孔深：','0.0m～',num2str(kongshen(i)),'m'));
+            end
+        else
+            if(kongshen(i)==round(kongshen(i))) % 后整
+                if(kongshen(i-1)==round(kongshen(i-1))) % 前整
+                    txt(i) = cellstr(strcat(Bname,' 第',num2str(i),'箱 孔深：',num2str(kongshen(i-1)),'.0m～',num2str(kongshen(i)),'.0m'));
+                else % 前不整
+                    txt(i) = cellstr(strcat(Bname,' 第',num2str(i),'箱 孔深：',num2str(kongshen(i-1)),'m～',num2str(kongshen(i)),'.0m'));
+                end
+            else % 后不整
+                if(kongshen(i-1)==round(kongshen(i-1))) % 前整
+                    txt(i) = cellstr(strcat(Bname,' 第',num2str(i),'箱 孔深：',num2str(kongshen(i-1)),'.0m～',num2str(kongshen(i)),'m'));
+                else % 前不整
+                    txt(i) = cellstr(strcat(Bname,' 第',num2str(i),'箱 孔深：',num2str(kongshen(i-1)),'m～',num2str(kongshen(i)),'m'));
+                end
+            end
+        end
+    end
+end
